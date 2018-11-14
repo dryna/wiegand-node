@@ -1,6 +1,4 @@
-"use strict";
-
-var Gpio = require('onoff').Gpio;
+const Gpio = require('onoff').Gpio;
 
 function Wiegand(pinD0, pinD1)
 {
@@ -64,7 +62,7 @@ Wiegand.prototype.noInterrupts = function()
 
 Wiegand.prototype.interrupts = function()
 {
-    var that = this;
+    const that = this;
     this.d0.watch(function (err, value) {
       if (err) {
         //throw err;
@@ -110,8 +108,8 @@ function translateEnterEscapeKeyPress(originalKeyPress) {
 
 Wiegand.prototype.DoWiegandConversion = function()
 {
-    var cardID;
-    var sysTick = millis();
+    let cardID;
+    const sysTick = millis();
     
     if ((sysTick - this._lastWiegand) > 25)                              // if no more signal coming through after 25ms
     {
@@ -125,8 +123,8 @@ Wiegand.prototype.DoWiegandConversion = function()
             {
                 // 8-bit Wiegand keyboard data, high nibble is the "NOT" of low nibble
                 // eg if key 1 pressed, data=E1 in binary 11100001 , high nibble=1110 , low nibble = 0001 
-                var highNibble = (this._cardTemp & 0xf0) >> 4;
-                var lowNibble = (this._cardTemp & 0x0f);
+                const highNibble = (this._cardTemp & 0xf0) >> 4;
+                const lowNibble = (this._cardTemp & 0x0f);
                 this._wiegandType = this._bitCount;                 
                 this._bitCount = 0;
                 this._cardTemp = 0;
@@ -179,7 +177,7 @@ Wiegand.prototype.DoWiegandConversion = function()
 
 function rfid_formatter(value)
 {
-    var str_value = value.toString();
+    let str_value = value.toString();
     while (str_value.length < 10)
         str_value = '0' + str_value;
     return str_value;
@@ -188,7 +186,7 @@ function rfid_formatter(value)
 Wiegand.prototype.available = function()
 {
     this.noInterrupts();
-    var ret = this.DoWiegandConversion();
+    const ret = this.DoWiegandConversion();
     this.interrupts();
     return ret;
 }
