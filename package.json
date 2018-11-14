@@ -12,7 +12,7 @@
   "author": "Reals <support@realsweb.com>",
   "license": "ISC",
   "dependencies": {
-    "onoff": "2.0.0"
+    "onoff": "3.2.2"
   },
   "repository": {
     "type": "git",
