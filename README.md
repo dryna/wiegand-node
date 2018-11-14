@@ -16,15 +16,15 @@ var Wiegand = require('wiegand-node');
 var pinD0 = 4,  //DATA0 of Wiegand connects to RPi GPIO04 (Pin 7)
     pinD1 = 17; //DATA1 of Wiegand connects to RPi GPIO17 (Pin 11)
 
-var wg = new Wiegand(pinD0, pinD1);
+const wg = new Wiegand(pinD0, pinD1);
 
-function getCode()
-{
-    if (wg.available())
-        console.log(wg.getCode()); //Display code
-}
+wg.on('data', (data) => {
+    console.log(data);
+});
 
-setInterval(getCode); //Infinite loop
+process.on('SIGINT', () => {
+  wg.noInterrupts();
+});
 
 </code></pre>
 ### Enabling GPIO pins
