@@ -30,8 +30,10 @@ class Wiegand extends EventEmitter {
       this._cardTemp <<= 1;        // D0 represent binary 0, so just left shift card data
     }
     this._lastWiegand = millis();    // Keep track of last wiegand bit received
-    if (this.DoWiegandConversion())
-      this._rfid_formatter(this._code);
+    setTimeout(() => {
+      if (this.DoWiegandConversion())
+        this._rfid_formatter(this._code);
+    }, 50)
   }
 
   ReadD1 () {
@@ -49,8 +51,10 @@ class Wiegand extends EventEmitter {
       this._cardTemp <<= 1;        // left shift card data
     }
     this._lastWiegand = millis();    // Keep track of last wiegand bit received
-    if (this.DoWiegandConversion())
-      this._rfid_formatter(this._code);
+    setTimeout(() => {
+      if (this.DoWiegandConversion())
+        this._rfid_formatter(this._code);
+    }, 50)
   }
 
   noInterrupts () {
@@ -64,7 +68,6 @@ class Wiegand extends EventEmitter {
       if (err) {
         console.log(err)
       }
-      console.log('ReadD0')
       that.ReadD0();
     });
 
@@ -72,7 +75,6 @@ class Wiegand extends EventEmitter {
       if (err) {
         console.log(err)
       }
-      console.log('ReadD1')
       that.ReadD1();
     });
   }
@@ -146,7 +148,6 @@ class Wiegand extends EventEmitter {
   }
 
   _rfid_formatter (value) {
-    console.log('RFID formater')
     let str_value = value.toString();
     while (str_value.length < 10)
       str_value = '0' + str_value;
