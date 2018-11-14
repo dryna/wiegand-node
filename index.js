@@ -125,8 +125,8 @@ Wiegand.prototype.DoWiegandConversion = function()
             {
                 // 8-bit Wiegand keyboard data, high nibble is the "NOT" of low nibble
                 // eg if key 1 pressed, data=E1 in binary 11100001 , high nibble=1110 , low nibble = 0001 
-                highNibble = (this._cardTemp & 0xf0) >> 4;
-                lowNibble = (this._cardTemp & 0x0f);
+                var highNibble = (this._cardTemp & 0xf0) >> 4;
+                var lowNibble = (this._cardTemp & 0x0f);
                 this._wiegandType = this._bitCount;                 
                 this._bitCount = 0;
                 this._cardTemp = 0;
