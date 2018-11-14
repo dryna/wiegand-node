@@ -14,10 +14,15 @@ class Wiegand extends EventEmitter {
     this.d0 = new Gpio(pinD0, 'in', 'falling');
     this.d1 = new Gpio(pinD1, 'in', 'falling');
 
-    this.interrupts();
+    this._interrupts();
   }
 
-  ReadD0 () {
+  noInterrupts () {
+    this.d0.unwatch();
+    this.d1.unwatch();
+  }
+
+  _readD0 () {
     this._bitCount++;                // Increament bit count for Interrupt connected to D0
     if (this._bitCount>31)           // If bit count more than 31, process high bits
     {
@@ -29,14 +34,14 @@ class Wiegand extends EventEmitter {
     {
       this._cardTemp <<= 1;        // D0 represent binary 0, so just left shift card data
     }
-    this._lastWiegand = millis();    // Keep track of last wiegand bit received
+    this._lastWiegand = _millis();    // Keep track of last wiegand bit received
     setTimeout(() => {
-      if (this.DoWiegandConversion())
+      if (this._doWiegandConversion())
         this._rfid_formatter(this._code);
     }, 30)
   }
 
-  ReadD1 () {
+  _readD1 () {
     this._bitCount ++;               // Increment bit count for Interrupt connected to D1
     if (this._bitCount>31)           // If bit count more than 31, process high bits
     {
@@ -50,38 +55,33 @@ class Wiegand extends EventEmitter {
       this._cardTemp |= 1;         // D1 represent binary 1, so OR card data with 1 then
       this._cardTemp <<= 1;        // left shift card data
     }
-    this._lastWiegand = millis();    // Keep track of last wiegand bit received
+    this._lastWiegand = _millis();    // Keep track of last wiegand bit received
     setTimeout(() => {
-      if (this.DoWiegandConversion())
+      if (this._doWiegandConversion())
         this._rfid_formatter(this._code);
     }, 30)
   }
 
-  noInterrupts () {
-    this.d0.unwatch();
-    this.d1.unwatch();
-  }
-
-  interrupts () {
+  _interrupts () {
     const that = this;
     this.d0.watch(function (err, value) {
       if (err) {
         console.log(err)
       }
-      that.ReadD0();
+      that._readD0();
     });
 
     this.d1.watch(function (err, value) {
       if (err) {
         console.log(err)
       }
-      that.ReadD1();
+      that._readD1();
     });
   }
 
-  DoWiegandConversion () {
+  _doWiegandConversion () {
     let cardID;
-    const sysTick = millis();
+    const sysTick = _millis();
 
     if ((sysTick - this._lastWiegand) > 25)                              // if no more signal coming through after 25ms
     {
@@ -104,7 +104,7 @@ class Wiegand extends EventEmitter {
 
           if (lowNibble == (~highNibble & 0x0f))      // check if low nibble matches the "NOT" of high nibble.
           {
-            this._code = translateEnterEscapeKeyPress(lowNibble);
+            this._code = _translateEnterEscapeKeyPress(lowNibble);
             return true;
           }
 
@@ -113,7 +113,7 @@ class Wiegand extends EventEmitter {
         else if (4 == this._bitCount) {
           // 4-bit Wiegand codes have no data integrity check so we just
           // read the LOW nibble.
-          this._code = translateEnterEscapeKeyPress(this._cardTemp & 0x0000000F);
+          this._code = _translateEnterEscapeKeyPress(this._cardTemp & 0x0000000F);
 
           this._wiegandType = this._bitCount;
           this._bitCount = 0;
@@ -124,7 +124,7 @@ class Wiegand extends EventEmitter {
         }
         else        // wiegand 26 or wiegand 34
         {
-          cardID = GetCardId(this._cardTempHigh, this._cardTemp, this._bitCount);
+          cardID = _getCardId(this._cardTempHigh, this._cardTemp, this._bitCount);
           this._wiegandType = this._bitCount;
           this._bitCount = 0;
           this._cardTemp = 0;
@@ -155,12 +155,12 @@ class Wiegand extends EventEmitter {
   }
 }
 
-function millis()
+function _millis()
 {
     return new Date().getTime();
 }
 
-function GetCardId(codehigh, codelow, bitlength)
+function _getCardId(codehigh, codelow, bitlength)
 {
     if (bitlength == 26)                              // EM tag
         return (codelow & 0x1FFFFFE) >> 1;
@@ -175,7 +175,7 @@ function GetCardId(codehigh, codelow, bitlength)
     return codelow;                                // EM tag or Mifare without parity bits
 }
 
-function translateEnterEscapeKeyPress(originalKeyPress) {
+function _translateEnterEscapeKeyPress(originalKeyPress) {
     switch(originalKeyPress) {
         case 0x0b:        // 11 or * key
             return 0x0d;  // 13 or ASCII ENTER
