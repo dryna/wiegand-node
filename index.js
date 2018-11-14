@@ -33,7 +33,7 @@ class Wiegand extends EventEmitter {
     setTimeout(() => {
       if (this.DoWiegandConversion())
         this._rfid_formatter(this._code);
-    }, 50)
+    }, 30)
   }
 
   ReadD1 () {
@@ -54,7 +54,7 @@ class Wiegand extends EventEmitter {
     setTimeout(() => {
       if (this.DoWiegandConversion())
         this._rfid_formatter(this._code);
-    }, 50)
+    }, 30)
   }
 
   noInterrupts () {
