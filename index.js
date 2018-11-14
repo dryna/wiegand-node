@@ -63,19 +63,18 @@ class Wiegand extends EventEmitter {
   }
 
   _interrupts () {
-    const that = this;
-    this.d0.watch(function (err, value) {
+    this.d0.watch((err, value) => {
       if (err) {
         console.log(err)
       }
-      that._readD0();
+      this._readD0();
     });
 
-    this.d1.watch(function (err, value) {
+    this.d1.watch((err, value) => {
       if (err) {
         console.log(err)
       }
-      that._readD1();
+      this._readD1();
     });
   }
 
