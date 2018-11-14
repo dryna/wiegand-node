@@ -62,15 +62,17 @@ class Wiegand extends EventEmitter {
     const that = this;
     this.d0.watch(function (err, value) {
       if (err) {
-        //throw err;
+        console.log(err)
       }
+      console.log('ReadD0')
       that.ReadD0();
     });
 
     this.d1.watch(function (err, value) {
       if (err) {
-        //throw err;
+        console.log(err)
       }
+      console.log('ReadD1')
       that.ReadD1();
     });
   }
@@ -144,6 +146,7 @@ class Wiegand extends EventEmitter {
   }
 
   _rfid_formatter (value) {
+    console.log('RFID formater')
     let str_value = value.toString();
     while (str_value.length < 10)
       str_value = '0' + str_value;
