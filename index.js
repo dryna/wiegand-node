@@ -150,7 +150,15 @@ class Wiegand extends EventEmitter {
     let str_value = value.toString();
     while (str_value.length < 10)
       str_value = '0' + str_value;
+
     this.emit('data', str_value);
+
+    if(this._wiegandType > 8) {
+      this.emit('card', str_value);
+    } else {
+      this.emit('key', value.toString());
+    }
+
   }
 }
 
