@@ -67,6 +67,7 @@ class Wiegand extends EventEmitter {
   _interrupts () {
     console.log('interupts')
     this.d0.watch((err, value) => {
+      console.log(value)
       if (err) {
         console.log(err)
       }
@@ -74,6 +75,7 @@ class Wiegand extends EventEmitter {
     });
 
     this.d1.watch((err, value) => {
+      console.log(value)
       if (err) {
         console.log(err)
       }
