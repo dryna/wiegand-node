@@ -23,6 +23,7 @@ class Wiegand extends EventEmitter {
   }
 
   _readD0 () {
+    console.log('readD0')
     this._bitCount++;                // Increament bit count for Interrupt connected to D0
     if (this._bitCount>31)           // If bit count more than 31, process high bits
     {
@@ -42,6 +43,7 @@ class Wiegand extends EventEmitter {
   }
 
   _readD1 () {
+    console.log('readD1')
     this._bitCount ++;               // Increment bit count for Interrupt connected to D1
     if (this._bitCount>31)           // If bit count more than 31, process high bits
     {
@@ -63,6 +65,7 @@ class Wiegand extends EventEmitter {
   }
 
   _interrupts () {
+    console.log('interupts')
     this.d0.watch((err, value) => {
       if (err) {
         console.log(err)
@@ -147,6 +150,7 @@ class Wiegand extends EventEmitter {
   }
 
   _rfid_formatter (value) {
+    console.log('_rfid_formatter')
     let str_value = value.toString();
     while (str_value.length < 10)
       str_value = '0' + str_value;
