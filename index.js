@@ -175,12 +175,15 @@ Wiegand.prototype.DoWiegandConversion = function()
         return false;
 }
 
-function rfid_formatter(value)
+function rfid_formatter(value, wiegandType)
 {
     let str_value = value.toString();
+    if (wiegandType === 4 || wiegandType === 8) {
+      return {type: 'key', value: str_value};
+    }
     while (str_value.length < 10)
         str_value = '0' + str_value;
-    return str_value;
+    return {type: 'card', value: str_value};
 }
 
 Wiegand.prototype.available = function()
@@ -193,7 +196,7 @@ Wiegand.prototype.available = function()
 
 Wiegand.prototype.getCode = function()
 {
-    return rfid_formatter(this._code);
+    return rfid_formatter(this._code, this._wiegandType);
 }
 
 module.exports = Wiegand;
