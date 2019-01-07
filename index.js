@@ -23,7 +23,13 @@ class Wiegand extends EventEmitter {
   }
 
   _readD0 () {
-    console.log('readD0')
+    const sysTick = _millis();
+
+    if ((sysTick - this._lastWiegand) > 25) {
+      this._doWiegandConversion()
+      clearTimeout(this.timerD0)
+    }
+
     this._bitCount++;                // Increament bit count for Interrupt connected to D0
     if (this._bitCount>31)           // If bit count more than 31, process high bits
     {
@@ -35,15 +41,23 @@ class Wiegand extends EventEmitter {
     {
       this._cardTemp <<= 1;        // D0 represent binary 0, so just left shift card data
     }
+
     this._lastWiegand = _millis();    // Keep track of last wiegand bit received
-    setTimeout(() => {
+
+    this.timerD0 = setTimeout(() => {
       if (this._doWiegandConversion())
         this._rfid_formatter(this._code);
     }, 30)
   }
 
   _readD1 () {
-    console.log('readD1')
+    const sysTick = _millis();
+
+    if ((sysTick - this._lastWiegand) > 25) {
+      this._doWiegandConversion()
+      clearTimeout(this.timerD1)
+    }
+
     this._bitCount ++;               // Increment bit count for Interrupt connected to D1
     if (this._bitCount>31)           // If bit count more than 31, process high bits
     {
@@ -57,17 +71,16 @@ class Wiegand extends EventEmitter {
       this._cardTemp |= 1;         // D1 represent binary 1, so OR card data with 1 then
       this._cardTemp <<= 1;        // left shift card data
     }
+
     this._lastWiegand = _millis();    // Keep track of last wiegand bit received
-    setTimeout(() => {
+   this.timerD1 = setTimeout(() => {
       if (this._doWiegandConversion())
         this._rfid_formatter(this._code);
     }, 30)
   }
 
   _interrupts () {
-    console.log('interupts')
     this.d0.watch((err, value) => {
-      console.log(value)
       if (err) {
         console.log(err)
       }
@@ -75,7 +88,6 @@ class Wiegand extends EventEmitter {
     });
 
     this.d1.watch((err, value) => {
-      console.log(value)
       if (err) {
         console.log(err)
       }
@@ -152,7 +164,6 @@ class Wiegand extends EventEmitter {
   }
 
   _rfid_formatter (value) {
-    console.log('_rfid_formatter')
     let str_value = value.toString();
     while (str_value.length < 10)
       str_value = '0' + str_value;
