@@ -23,12 +23,8 @@ class Wiegand extends EventEmitter {
   }
 
   _readD0 () {
-    const sysTick = _millis();
-
-    if ((sysTick - this._lastWiegand) > 25) {
-      this._doWiegandConversion()
-      clearTimeout(this.timerD0)
-    }
+    if (this._doWiegandConversion())
+      this._rfid_formatter(this._code);
 
     this._bitCount++;                // Increament bit count for Interrupt connected to D0
     if (this._bitCount>31)           // If bit count more than 31, process high bits
@@ -44,19 +40,15 @@ class Wiegand extends EventEmitter {
 
     this._lastWiegand = _millis();    // Keep track of last wiegand bit received
 
-    this.timerD0 = setTimeout(() => {
+    setTimeout(() => {
       if (this._doWiegandConversion())
         this._rfid_formatter(this._code);
     }, 30)
   }
 
   _readD1 () {
-    const sysTick = _millis();
-
-    if ((sysTick - this._lastWiegand) > 25) {
-      this._doWiegandConversion()
-      clearTimeout(this.timerD1)
-    }
+    if (this._doWiegandConversion())
+      this._rfid_formatter(this._code);
 
     this._bitCount ++;               // Increment bit count for Interrupt connected to D1
     if (this._bitCount>31)           // If bit count more than 31, process high bits
@@ -73,7 +65,7 @@ class Wiegand extends EventEmitter {
     }
 
     this._lastWiegand = _millis();    // Keep track of last wiegand bit received
-   this.timerD1 = setTimeout(() => {
+    this.timerD1 = setTimeout(() => {
       if (this._doWiegandConversion())
         this._rfid_formatter(this._code);
     }, 30)
